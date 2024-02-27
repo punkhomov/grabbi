@@ -1,0 +1,9 @@
+[versions]
+ktor = "2.3.8"
+jsoup = "1.17.2"
+gson = "2.10.1"
+
+[libraries]
+ktor-client-apache5 = { module = "io.ktor:ktor-client-apache5", version.ref = "ktor" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
