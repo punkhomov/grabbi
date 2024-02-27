@@ -19,8 +19,8 @@ import punkhomov.grabbi.http.*
 abstract class SotkWebApiCall<Result> : HttpApiCall<Result>() {
     override val service = SotkWebService
 
-    override suspend fun buildHttpRequest(context: ApiCallContext, builder: HttpRequestBuilder) {
-        builder.apply {
+    override suspend fun buildHttpRequest(context: ApiCallContext, request: HttpRequestBuilder) {
+        request.apply {
             url {
                 protocol = URLProtocol.HTTPS
                 host = "www.s-otk.ru"

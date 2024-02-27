@@ -1,17 +1,40 @@
 package punkhomov.grabbi.http
 
 import io.ktor.client.statement.*
+import punkhomov.grabbi.core.utils.qualifiedNameOrThrow
 import kotlin.reflect.KClass
 
+/**
+ * The container is used to store both the original [io.ktor.client.statement.HttpResponse]
+ * and its transformed versions.
+ *
+ * @property httpResponse The original [io.ktor.client.statement.HttpResponse].
+ */
 class TransformedResponse(val httpResponse: HttpResponse) {
     private val transformed = HashMap<String, Any>()
+
+    /**
+     * The number of transformed versions.
+     */
     val size: Int by transformed::size
 
+    /**
+     * Puts the transformed version using the corresponding class type as the key.
+     *
+     * @param kClass The type key.
+     * @param value The transformed version of specified type.
+     */
     fun <T : Any> putAs(kClass: KClass<T>, value: T) {
         val key = getKey(kClass)
         transformed[key] = value
     }
 
+    /**
+     * Gets the transformed version using the corresponding class type as the key.
+     *
+     * @param kClass The type key.
+     * @return The transformed version of specified type.
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getOrNullAs(kClass: KClass<T>): T? {
         val key = getKey(kClass)
@@ -19,15 +42,22 @@ class TransformedResponse(val httpResponse: HttpResponse) {
         return value as T?
     }
 
+    /**
+     * Gets the transformed version using the corresponding class type as the key.
+     *
+     * @param kClass The type key.
+     * @return The transformed version of specified type.
+     * @throws NoSuchElementException If the transformed version of specified type not found.
+     */
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getOrThrowAs(kClass: KClass<T>): T {
         val key = getKey(kClass)
-        val value = transformed[key] ?: error("No response is present with '$key' type.")
+        val value = transformed[key] ?: throw NoSuchElementException("No response is present with '$key' type.")
         return value as T
     }
 
     private fun getKey(kClass: KClass<*>): String {
-        return kClass.qualifiedName ?: error("Anonymous classes is not allowed")
+        return kClass.qualifiedNameOrThrow()
     }
 }
 

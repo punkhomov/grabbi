@@ -8,10 +8,10 @@ import punkhomov.grabbi.example.util.takeAsHtml
 import punkhomov.grabbi.http.TransformedResponse
 
 class ObtainTokenCall : SotkWebApiCall<Token>() {
-    override suspend fun buildHttpRequest(context: ApiCallContext, builder: HttpRequestBuilder) {
-        super.buildHttpRequest(context, builder)
+    override suspend fun buildHttpRequest(context: ApiCallContext, request: HttpRequestBuilder) {
+        super.buildHttpRequest(context, request)
 
-        builder.apply {
+        request.apply {
             method = HttpMethod.Get
 
             url {
@@ -20,7 +20,7 @@ class ObtainTokenCall : SotkWebApiCall<Token>() {
         }
     }
 
-    override fun parseResponse(context: ApiCallContext, response: TransformedResponse): Token {
+    override suspend fun parseResponse(context: ApiCallContext, response: TransformedResponse): Token {
         val document = response.takeAsHtml()
 
         return Token.from(document)

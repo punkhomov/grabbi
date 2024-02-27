@@ -23,12 +23,12 @@ class GetCardInfoCall(val cardNumber: CardNumber) : SotkWebApiCall<CardInfo>() {
         require(SotkWebService.TOKEN)
     }
 
-    override suspend fun buildHttpRequest(context: ApiCallContext, builder: HttpRequestBuilder) {
-        super.buildHttpRequest(context, builder)
+    override suspend fun buildHttpRequest(context: ApiCallContext, request: HttpRequestBuilder) {
+        super.buildHttpRequest(context, request)
 
         val token = context.getPropOrThrow(SotkWebService.TOKEN)
 
-        builder.apply {
+        request.apply {
             configureAjaxRequest()
 
             setBodyAjaxForm(AjaxOperation.GET_CARD_INFO, cardNumber, token)
@@ -40,7 +40,7 @@ class GetCardInfoCall(val cardNumber: CardNumber) : SotkWebApiCall<CardInfo>() {
 
     }
 
-    override fun parseResponse(context: ApiCallContext, response: TransformedResponse): CardInfo {
+    override suspend fun parseResponse(context: ApiCallContext, response: TransformedResponse): CardInfo {
         val json = response.takeAsJson().asJsonObject
 
         val dataString = json.get("data").asString

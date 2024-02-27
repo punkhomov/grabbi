@@ -6,7 +6,13 @@ import punkhomov.grabbi.core.ApiCallContext
 import punkhomov.grabbi.core.ApiService
 import punkhomov.grabbi.core.createPropKey
 
+/**
+ * Represents the extension of [ApiService] that enables the use of HTTP requests.
+ */
 abstract class HttpApiService : ApiService() {
+    /**
+     * The client for executing http requests.
+     */
     protected abstract val httpClient: HttpClient
 
     override suspend fun buildContext(call: ApiCall<*>, context: ApiCallContext) {

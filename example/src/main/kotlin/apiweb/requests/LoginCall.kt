@@ -44,10 +44,10 @@ class LoginCall(
 
 
 private class GetLoginFormTokenCall : SotkWebApiCall<String>() {
-    override suspend fun buildHttpRequest(context: ApiCallContext, builder: HttpRequestBuilder) {
-        super.buildHttpRequest(context, builder)
+    override suspend fun buildHttpRequest(context: ApiCallContext, request: HttpRequestBuilder) {
+        super.buildHttpRequest(context, request)
 
-        builder.apply {
+        request.apply {
             method = HttpMethod.Get
 
             url {
@@ -61,7 +61,7 @@ private class GetLoginFormTokenCall : SotkWebApiCall<String>() {
         // todo cancel check for auth
     }
 
-    override fun parseResponse(context: ApiCallContext, response: TransformedResponse): String {
+    override suspend fun parseResponse(context: ApiCallContext, response: TransformedResponse): String {
         val document = response.takeAsHtml()
 
         return document.expectByXpath(TOKEN_XPATH).attr("name")
@@ -76,10 +76,10 @@ private class GetLoginFormTokenCall : SotkWebApiCall<String>() {
 private class LoginFormSumbitCall(
     val username: String, val password: String, val rememberMe: Boolean, val token: String
 ) : SotkWebApiCall<LoggedInUser>() {
-    override suspend fun buildHttpRequest(context: ApiCallContext, builder: HttpRequestBuilder) {
-        super.buildHttpRequest(context, builder)
+    override suspend fun buildHttpRequest(context: ApiCallContext, request: HttpRequestBuilder) {
+        super.buildHttpRequest(context, request)
 
-        builder.apply {
+        request.apply {
             method = HttpMethod.Post
 
             url {
@@ -104,7 +104,7 @@ private class LoginFormSumbitCall(
         chain.cancel(CheckForInvalidAuthToken)
     }
 
-    override fun parseResponse(context: ApiCallContext, response: TransformedResponse): LoggedInUser {
+    override suspend fun parseResponse(context: ApiCallContext, response: TransformedResponse): LoggedInUser {
         val html = response.takeAsHtml()
         val username = html.expectFirst(".lk_header h5").text().drop(14)
         return LoggedInUser(username)
